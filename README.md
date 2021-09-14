@@ -60,4 +60,35 @@ Following some useful materials for your work:
 
 [Pseudo Code Methodology](https://wtmatter.com/pseudocode/)
 
+# To-do
+
+* LOGIC
+
+- grab random word from api
+- create a start game function
+- make the word secret so it will display _ instead of letters
+- listen to key press and link it to guesses
+- if pressed key is a letter included in the word, the world should appear
+- if the key is not, a list of wrong pressed key should also appear
+- set game over limit at 6 tries
+- set game win if all letters in the word are pressed
+
+
+* UI
+
+- make letter to be guessed in circle resembling coin, with one side with a common background and the other with the letter
+- when letter is guessed animate the coin and flip it
+- animate the wrong tries in some way
+- animate game win
+- animate game over
+- button component for restart game to put in app and modal
+
+* EXTRA wannabe
+
+- instead of tries, use money to bet on letters
+- add hints that you can trade with money
+- hint: get the definition of the word, with a call at the dictionary
+- hint: flip a letter(50% chance getting the letter)
+
+
 
