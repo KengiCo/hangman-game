@@ -1,27 +1,29 @@
 <template>
   <!-- <button class="letter">{{ letter }}</button> -->
- <div class="maincontainer">
-  <div class="thecard">
-    <div class="thefront">
-      <h1>Front of Card</h1>
-      <p>{{ letter }}
-      </p>
-    </div>
+  <div class="letter">
+    <div
+      class="thecard"
+      :class="[guessedLetter ? 'thecard-guessed' : '']"
+    >
+      <div class="thefront">
+        <h1>*</h1>
+      </div>
 
-    <div class="theback">
-      <h1>Back of Card</h1>
-      <p>
-{{ letter }}
-      </p>
+      <div class="theback">
+        {{ letter }}
+      </div>
     </div>
   </div>
-  </div>
-
 </template>
 
 <script>
 export default {
   props: ["letter"],
+  computed: {
+      guessedLetter() { 
+      if (this.letter == "_") {
+        return  false } else {return true}
+  }}
 };
 </script>
 
@@ -38,61 +40,67 @@ export default {
   font-weight: bold;
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
 } */
-.maincontainer{
+.letter {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: row;
-  width: 35px;
-  height: 35px;
+  width: 80px;
+  height: 80px;
   background: none;
-  border-radius: 50%;
+  border-radius: 80%;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-
+  /* transform: translate(-50%, -50%); */
+  transform: translate(0%, 0%);
 }
 
 /* THE CARD HOLDS THE FRONT AND BACK FACES */
 .thecard {
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 100%;
   transform-style: preserve-3d;
   transition: all 0.8s ease;
 }
 
 /* THE PSUEDO CLASS CONTROLS THE FLIP ON MOUSEOVER AND MOUSEOUT */
-.thecard:hover {
-  transform: rotateY(180deg);
+.thecard-guessed {
+  transform: rotateY(900deg);
+  transition-duration: 2s;
 }
 
 /* THE FRONT FACE OF THE CARD, WHICH SHOWS BY DEFAULT */
 .thefront {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 100%;
   backface-visibility: hidden;
   overflow: hidden;
   background: #ffc728;
   color: #000;
+  text-align: center;
+  font-size: 140px;
 }
 
 /* THE BACK FACE OF THE CARD, WHICH SHOWS ON MOUSEOVER */
 .theback {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 100%;
   backface-visibility: hidden;
   overflow: hidden;
   background: #fafafa;
   color: #333;
+  font-size: 60px;
   text-align: center;
   transform: rotateY(180deg);
 }
@@ -101,19 +109,19 @@ export default {
 .thefront h1,
 .theback h1 {
   font-family: "zilla slab", sans-serif;
-  padding: 30px;
   font-weight: bold;
-  font-size: 24px;
+  font-size: 110px;
   text-align: center;
+  margin: 0px;
 }
 
-.thefront p,
+/* .thefront p,
 .theback p {
   font-family: "zilla slab", sans-serif;
   padding: 30px;
   font-weight: normal;
   font-size: 12px;
   text-align: center;
-}
+} */
 /*This block (ends here) is merely styling for the flip card, and is NOT an essential part of the flip code */
 </style>

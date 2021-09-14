@@ -1,25 +1,28 @@
 <template>
   <div><h1>Hello Hangman</h1></div>
-  <div>
-    <Letter
+  <div class="secret-letters">
+    <letter
       v-bind:key="letter.index"
       v-for="letter in secretWord"
       :letter="letter"
-    ></Letter>
+    ></letter>
   </div>
 
-  <button v-if="!startedGame" @click="oneWord">START</button>
+  <!-- <button v-if="!startedGame" @click="oneWord">START</button> -->
   <div class="user-input" v-if="startedGame">
     <h1>type the letter you want to guess</h1>
   </div>
-  <button v-if="startedGame && !win && !lost" @click="restart">RESTART</button>
+  <button-start
+    :style="{ content: RESTART }"
+    v-if="startedGame && !win && !lost"
+    @close="restart"
+  ></button-start>
 
   <div>
     <li class="wrong-keys" v-for="wrong in wrongLetters" :key="wrong.index">
       {{ wrong }}
     </li>
   </div>
-
   <!-- <div v-if="lost">
     <h2>YOU LOST YOU DONKEY</h2>
     <div><button v-if="startedGame" @click="restart">RESTART</button></div>
@@ -30,35 +33,56 @@
   </div> -->
 
   <transition name="modal">
-    <Modal v-if="lost" @close="restart">
+    <modal v-if="lost" @close="restart">
       <template v-slot:header>
-        <h3>You Lost</h3>
+        <h3>Vaccaboia! You Lost</h3>
       </template>
       <template v-slot:body>
-        <h3>Vaccaboia</h3>
+        <h3>The word was: {{ word }}</h3>
       </template>
-    </Modal>
+    </modal>
   </transition>
 
   <transition name="modal">
-    <Modal v-if="win" @close="restart">
+    <modal v-if="win" @close="restart">
       <template v-slot:header>
         <h3>You Win</h3>
       </template>
       <template v-slot:body>
         <h3>Winner</h3>
       </template>
-    </Modal>
+    </modal>
   </transition>
-</template>
 
+    <transition name="modal">
+      
+    <modal v-if="hasDefinition">
+      <template v-slot:body>
+        <h3>Psst..Do you want a little help?</h3>
+        <div v-if="showHint"><h3>{{ definition }}</h3></div>
+        <button @click="showHintToggle">SHOW HINT</button>
+        <button @click="closeHintModal"> CLOSE </button>
+    </template>
+    </modal>
+</transition>
+
+
+
+  <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
+<button @click="checkDictionary">DICTIONARY</button>
+
+
+</template>
 <script>
 import Letter from "./components/Letter";
 import Modal from "./components/Modal";
+import ButtonStart from "./components/ButtonStart";
+
 export default {
   components: {
     Letter,
     Modal,
+    ButtonStart
   },
   data() {
     return {
@@ -69,6 +93,9 @@ export default {
       wrongLetters: [],
       lost: false,
       win: false,
+      definition: "",
+      hasDefinition : false,
+      showHint : false
     };
   },
   mounted: function() {
@@ -89,6 +116,7 @@ export default {
       this.lost = false;
       this.win = false;
       this.wrongLetters = [];
+      this.startedGame = true;
       this.oneWord();
     },
     checkPressed() {
@@ -113,13 +141,33 @@ export default {
     },
     startGame() {
       this.secretWord = this.word.split("").map(() => "_");
-      this.startedGame = !this.startedGame;
+      this.startedGame = true;
     },
     checkWin() {
       if (!this.secretWord.includes("_")) {
+        this.startedGame = false;
         return (this.win = true);
       }
     },
+      async checkDictionary() {
+        // this checks on datamuse with sp = spelling and md=d definition
+        // `https://api.datamuse.com/words?sp=${this.word.toLowerCase()}&md=d`
+      const res = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${this.word.toLowerCase()}`
+      );
+      const json = await res.json();
+      // const result = JSON.stringify(json)
+//        this is syntax for datamuse
+//        this.definition = result[0].defs[0];
+          this.definition = json[0]['meanings'][0]['definitions'][0]['definition']
+          console.log(this.definition)
+},
+      showHintToggle(){
+        return this.showHint = !this.showHint
+      },
+      closeHintModal(){
+        return this.hasDefinition = false
+      }
   },
   computed: {
     wrongTotal: function() {
@@ -129,10 +177,16 @@ export default {
   watch: {
     wrongTotal() {
       if (this.wrongTotal > 6) {
-        this.lost = true;
+        this.lost = true
+        this.startedGame = false;
       }
     },
-  },
+    definition(){
+      if (this.definition.length > 0) {
+        return this.hasDefinition = true
+      }
+    }
+  }
 };
 </script>
 
@@ -161,6 +215,11 @@ a {
 }
 button {
   margin: 2rem;
+}
+.secret-letters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 .user-input {
   padding: 10px;

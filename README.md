@@ -80,7 +80,7 @@ Following some useful materials for your work:
 - when letter is guessed animate the coin and flip it
 - animate the wrong tries in some way
 - animate game win
-- animate game over
+- animate game over and show the word
 - button component for restart game to put in app and modal
 
 * EXTRA wannabe
@@ -89,6 +89,8 @@ Following some useful materials for your work:
 - add hints that you can trade with money
 - hint: get the definition of the word, with a call at the dictionary
 - hint: flip a letter(50% chance getting the letter)
+
+
 
 
 
