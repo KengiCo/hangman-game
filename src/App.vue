@@ -1,11 +1,18 @@
 <template>
   <div><h1>Hello Hangman</h1></div>
+  <h2>Total coins: {{ coins }}</h2>
+  <h2>Guessed words: {{ totalGuessWords }}</h2>
+
+  <!-- these are the displayed coin that animate when guessing the word -->
   <div class="secret-letters">
     <letter
+      @hint-reveal="hintReveal(index)"
       v-bind:key="letter.index"
-      v-for="letter in secretWord"
+      v-for="(letter, index) of secretWord"
+      v-bind:id="letter.index"
       :letter="letter"
-    ></letter>
+    >
+    </letter>
   </div>
 
   <!-- <button v-if="!startedGame" @click="oneWord">START</button> -->
@@ -13,7 +20,6 @@
     <h1>type the letter you want to guess</h1>
   </div>
   <button-start
-    :style="{ content: RESTART }"
     v-if="startedGame && !win && !lost"
     @close="restart"
   ></button-start>
@@ -44,35 +50,68 @@
   </transition>
 
   <transition name="modal">
-    <modal v-if="win" @close="restart">
+    <modal v-if="win" @close="oneWord">
       <template v-slot:header>
-        <h3>You Win</h3>
+        <h3>You got it right!</h3>
       </template>
       <template v-slot:body>
-        <h3>Winner</h3>
+        <h3>The word was: {{ word }}</h3>
       </template>
     </modal>
   </transition>
 
-    <transition name="modal">
-      
+  <!-- <transition name="modal">
     <modal v-if="hasDefinition">
       <template v-slot:body>
         <h3>Psst..Do you want a little help?</h3>
-        <div v-if="showHint"><h3>{{ definition }}</h3></div>
+        <div v-if="showHint">
+          <h3>{{ definition }}</h3>
+        </div>
         <button @click="showHintToggle">SHOW HINT</button>
-        <button @click="closeHintModal"> CLOSE </button>
-    </template>
+        <button @click="closeHintModal">CLOSE</button>
+      </template>
     </modal>
-</transition>
+  </transition> -->
 
+  <transition name="modal">
+    <modal v-if="showHint">
+      <template v-slot:body>
+        <div v-if="hasDefinition">
+          <h3>Pay 3 Coins and we will tell you something about the word</h3>
+          <button v-if="!showDefinitionToggle" @click="showDefinition">
+            YES, I WANNA KNOW!
+          </button>
+          <div v-if="showDefinitionToggle">
+            <h3>{{ definition }}</h3>
+          </div>
+        </div>
+        <h3>
+          Pay 3 Coins to reveal one letter of the word(and all the other
+          occerrences of the same letter!!)
+        </h3>
+        <button @click="hintRevealPay">
+          YES, LET ME CHOOSE A LETTER TO REVEAL!
+        </button>
 
+        <button @click="showHintToggle">CLOSE</button>
+      </template>
+    </modal>
+  </transition>
 
   <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
-<button @click="checkDictionary">DICTIONARY</button>
 
+  <button
+    @click="
+      showHintToggle();
+      checkDictionary();
+    "
+  >
+    WANNA PAY FOR SOME HINTS?
+  </button>
 
+  <!-- <button @click="checkDictionary">DICTIONARY</button> -->
 </template>
+
 <script>
 import Letter from "./components/Letter";
 import Modal from "./components/Modal";
@@ -82,7 +121,7 @@ export default {
   components: {
     Letter,
     Modal,
-    ButtonStart
+    ButtonStart,
   },
   data() {
     return {
@@ -94,8 +133,12 @@ export default {
       lost: false,
       win: false,
       definition: "",
-      hasDefinition : false,
-      showHint : false
+      hasDefinition: false,
+      showDefinitionToggle: false,
+      hintRevealToggle: false,
+      showHint: false,
+      coins: 5,
+      totalGuessWords: 0,
     };
   },
   mounted: function() {
@@ -117,6 +160,11 @@ export default {
       this.win = false;
       this.wrongLetters = [];
       this.startedGame = true;
+      this.definition = "";
+      this.hasDefinition = false;
+      this.showHint = false;
+      this.coins = 5;
+      this.totalGuessWords = 0;
       this.oneWord();
     },
     checkPressed() {
@@ -125,49 +173,75 @@ export default {
           const char = this.word[i];
           if (char == this.guessedLetter) {
             this.secretWord[i] = this.guessedLetter;
-            this.checkWin();
+            this.coins++;
+            this.checkWord();
           }
         }
       } else {
-        this.wrongLetters.push(this.guessedLetter);
+        if (!this.wrongLetters.includes(this.guessedLetter)) {
+          this.wrongLetters.push(this.guessedLetter);
+          this.coins--;
+        }
       }
     },
     pressedKey(e) {
       if (e.key >= "a" && e.key <= "z") {
         this.guessedLetter = e.key.toUpperCase();
         console.log(this.guessedLetter);
-        this.checkPressed();
+        // condition to avoid double pressing, checks if pressed key has already been guessed
+        if (!this.secretWord.includes(this.guessedLetter)) {
+          this.checkPressed();
+        }
       }
     },
     startGame() {
       this.secretWord = this.word.split("").map(() => "_");
+      this.win = false;
       this.startedGame = true;
     },
-    checkWin() {
+    checkWord() {
       if (!this.secretWord.includes("_")) {
         this.startedGame = false;
+        this.totalGuessWords++;
+        this.coins = this.coins + 3;
         return (this.win = true);
       }
     },
-      async checkDictionary() {
-        // this checks on datamuse with sp = spelling and md=d definition
-        // `https://api.datamuse.com/words?sp=${this.word.toLowerCase()}&md=d`
+    async checkDictionary() {
+      // this checks on datamuse with sp = spelling and md=d definition
+      // `https://api.datamuse.com/words?sp=${this.word.toLowerCase()}&md=d`
       const res = await fetch(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${this.word.toLowerCase()}`
       );
       const json = await res.json();
       // const result = JSON.stringify(json)
-//        this is syntax for datamuse
-//        this.definition = result[0].defs[0];
-          this.definition = json[0]['meanings'][0]['definitions'][0]['definition']
-          console.log(this.definition)
-},
-      showHintToggle(){
-        return this.showHint = !this.showHint
-      },
-      closeHintModal(){
-        return this.hasDefinition = false
+      //        this is syntax for datamuse
+      //        this.definition = result[0].defs[0];
+      this.definition = json[0]["meanings"][0]["definitions"][0]["definition"];
+      console.log(this.definition);
+    },
+    showHintToggle() {
+      this.showDefinitionToggle = false;
+      return (this.showHint = !this.showHint);
+    },
+    closeHintModal() {
+      return (this.hasDefinition = false);
+    },
+    hintReveal(letterIndex) {
+      if (this.hintRevealToggle) {
+        this.guessedLetter = this.word[letterIndex];
+        this.checkPressed();
+        return (this.hintRevealToggle = false);
       }
+    },
+    hintRevealPay(){
+      this.coins = this.coins - 3;
+            return this.hintRevealToggle = true
+    },
+    showDefinition() {
+      this.coins = this.coins - 3;
+      return this.showDefinitionToggle = !this.showDefinitionToggle;
+    },
   },
   computed: {
     wrongTotal: function() {
@@ -175,18 +249,23 @@ export default {
     },
   },
   watch: {
+    coins() {
+      if (this.coins <= 0) {
+        this.lost = true;
+      }
+    },
     wrongTotal() {
       if (this.wrongTotal > 6) {
-        this.lost = true
+        this.lost = true;
         this.startedGame = false;
       }
     },
-    definition(){
+    definition() {
       if (this.definition.length > 0) {
-        return this.hasDefinition = true
+        return (this.hasDefinition = true);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

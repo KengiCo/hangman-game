@@ -4,6 +4,7 @@
     <div
       class="thecard"
       :class="[guessedLetter ? 'thecard-guessed' : '']"
+      @click="$emit('hint-reveal')"
     >
       <div class="thefront">
         <h1>*</h1>
@@ -20,10 +21,14 @@
 export default {
   props: ["letter"],
   computed: {
-      guessedLetter() { 
+    guessedLetter() {
       if (this.letter == "_") {
-        return  false } else {return true}
-  }}
+        return false;
+      } else {
+        return true;
+      }
+    },
+  },
 };
 </script>
 
@@ -63,13 +68,13 @@ export default {
   height: 100%;
   border-radius: 100%;
   transform-style: preserve-3d;
-  transition: all 0.8s ease;
+  transition: all 0.8s cubic-bezier(0,.79,.75,.71);
 }
 
 /* THE PSUEDO CLASS CONTROLS THE FLIP ON MOUSEOVER AND MOUSEOUT */
 .thecard-guessed {
   transform: rotateY(900deg);
-  transition-duration: 2s;
+  transition-duration: 2s;  
 }
 
 /* THE FRONT FACE OF THE CARD, WHICH SHOWS BY DEFAULT */
