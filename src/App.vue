@@ -1,11 +1,12 @@
 <template>
-  <div><h1>Hello Hangman</h1></div>
+  <div class="animate__animated animate__bounceInDown"><h1>Hello Hangman</h1></div>
   <h2>Total coins: {{ coins }}</h2>
   <h2>Guessed words: {{ totalGuessWords }}</h2>
 
   <!-- these are the displayed coin that animate when guessing the word -->
   <div class="secret-letters">
     <letter
+      :style="{cursor: hintRevealToggle ? 'pointer' : 'default'}"
       @hint-reveal="hintReveal(index)"
       v-bind:key="letter.index"
       v-for="(letter, index) of secretWord"
@@ -26,17 +27,10 @@
 
   <div>
     <li class="wrong-keys" v-for="wrong in wrongLetters" :key="wrong.index">
-      {{ wrong }}
+     <h1 class="animate__animated animate__headShake">{{ wrong }}</h1> 
     </li>
   </div>
-  <!-- <div v-if="lost">
-    <h2>YOU LOST YOU DONKEY</h2>
-    <div><button v-if="startedGame" @click="restart">RESTART</button></div>
-  </div>
-  <div v-if="win">
-    <h2>YOU WIN YOU DUMBASS</h2>
-    <div><button v-if="startedGame" @click="restart">RESTART</button></div>
-  </div> -->
+
 
   <transition name="modal">
     <modal v-if="lost" @close="restart">
@@ -60,18 +54,6 @@
     </modal>
   </transition>
 
-  <!-- <transition name="modal">
-    <modal v-if="hasDefinition">
-      <template v-slot:body>
-        <h3>Psst..Do you want a little help?</h3>
-        <div v-if="showHint">
-          <h3>{{ definition }}</h3>
-        </div>
-        <button @click="showHintToggle">SHOW HINT</button>
-        <button @click="closeHintModal">CLOSE</button>
-      </template>
-    </modal>
-  </transition> -->
 
   <transition name="modal">
     <modal v-if="showHint">
@@ -101,6 +83,7 @@
   <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
 
   <button
+    v-if="startedGame"
     @click="
       showHintToggle();
       checkDictionary();
@@ -235,8 +218,9 @@ export default {
       }
     },
     hintRevealPay(){
-      this.coins = this.coins - 3;
-            return this.hintRevealToggle = true
+      this.coins = this.coins - 3
+      this.showHint = false
+      return this.hintRevealToggle = true
     },
     showDefinition() {
       this.coins = this.coins - 3;

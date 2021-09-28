@@ -6,7 +6,7 @@
       :class="[guessedLetter ? 'thecard-guessed' : '']"
       @click="$emit('hint-reveal')"
     >
-      <div class="thefront">
+      <div  class="thefront">
         <h1>*</h1>
       </div>
 
