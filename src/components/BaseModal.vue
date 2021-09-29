@@ -1,39 +1,33 @@
 <template>
+  <div class="modal-mask">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <slot name="header"> </slot>
+        </div>
 
-<div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-body">
+          <slot name="body"> </slot>
+        </div>
 
-          <div class="modal-header">
-            <slot name="header">
-            </slot>
-          </div>
-
-          <div class="modal-body">
-            <slot name="body">
-            </slot>
-          </div>
-
-          <div class="modal-footer">
+        <div class="modal-footer">
+          <footer v-if="$slots.footer">
             <slot name="footer">
               <span>
-                  <a @click="$emit('close')"></a>
+                <a @click="$emit('close')">
+                </a>
               </span>
             </slot>
-          </div>
+          </footer>
         </div>
       </div>
     </div>
-
+  </div>
 </template>
 
 <script>
-export default {
-
-}
-
+export default {};
 </script>
-
 
 <style scoped>
 .modal-mask {
@@ -62,7 +56,7 @@ export default {
   background-color: #fff;
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
 .modal-header h3 {
@@ -76,9 +70,8 @@ export default {
 
 .modal-default-button {
   margin-top: 2rem;
-
 }
-span{
+span {
   position: relative;
   display: inline-flex;
   width: 180px;
@@ -86,17 +79,16 @@ span{
   margin: 0 15px;
   perspective: 1000px;
 }
-span a{
+span a {
   font-size: 19px;
   letter-spacing: 1px;
   transform-style: preserve-3d;
   transform: translateZ(-25px);
-  transition: transform .25s;
-  font-family: 'Montserrat', sans-serif;
-  
+  transition: transform 0.25s;
+  font-family: "Montserrat", sans-serif;
 }
 span a:before,
-span a:after{
+span a:after {
   position: absolute;
   content: "RESTART";
   height: 55px;
@@ -108,18 +100,16 @@ span a:after{
   box-sizing: border-box;
   border-radius: 5px;
 }
-span a:before{
+span a:before {
   color: #fff;
   background: #000;
   transform: rotateY(0deg) translateZ(25px);
 }
-span a:after{
+span a:after {
   color: #000;
   transform: rotateX(90deg) translateZ(25px);
 }
-span a:hover{
+span a:hover {
   transform: translateZ(-25px) rotateX(-90deg);
 }
-
-
 </style>

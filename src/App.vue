@@ -1,12 +1,15 @@
 <template>
-  <div class="animate__animated animate__bounceInDown"><h1>Hello Hangman</h1></div>
+  <header class="animate__animated animate__bounceInDown">
+    <h1 id="title">GUESSaWORD</h1>
+  </header>
   <h2>Total coins: {{ coins }}</h2>
   <h2>Guessed words: {{ totalGuessWords }}</h2>
 
   <!-- these are the displayed coin that animate when guessing the word -->
   <div class="secret-letters">
     <letter
-      :style="{cursor: hintRevealToggle ? 'pointer' : 'default'}"
+      class="animate__animated animate__flipInY"
+      :style="{ cursor: hintRevealToggle ? 'pointer' : 'default' }"
       @hint-reveal="hintReveal(index)"
       v-bind:key="letter.index"
       v-for="(letter, index) of secretWord"
@@ -27,36 +30,45 @@
 
   <div>
     <li class="wrong-keys" v-for="wrong in wrongLetters" :key="wrong.index">
-     <h1 class="animate__animated animate__headShake">{{ wrong }}</h1> 
+      <h1 class="animate__animated animate__headShake">{{ wrong }}</h1>
     </li>
   </div>
 
-
   <transition name="modal">
-    <modal v-if="lost" @close="restart">
+    <base-modal v-if="lost" @close="restart">
       <template v-slot:header>
-        <h3>Vaccaboia! You Lost</h3>
+        <h1>Vaccaboia! You Lost</h1>
       </template>
       <template v-slot:body>
         <h3>The word was: {{ word }}</h3>
       </template>
-    </modal>
+      <template v-slot:footer>
+        <!-- <button>DEAFULT BUTTON TO GET A NEW WORD</button> -->
+      </template>
+    </base-modal>
   </transition>
 
   <transition name="modal">
-    <modal v-if="win" @close="oneWord">
+    <base-modal v-if="win" @close="restart">
       <template v-slot:header>
-        <h3>You got it right!</h3>
+        <h1>You got it right!</h1>
       </template>
       <template v-slot:body>
         <h3>The word was: {{ word }}</h3>
+        <div id="hint-footer">
+          <button id="hint-button" @click="oneWord">
+            LET'S GUESS THE NEXT
+          </button>
+        </div>
       </template>
-    </modal>
+    </base-modal>
   </transition>
 
-
   <transition name="modal">
-    <modal v-if="showHint">
+    <base-modal v-if="showHint">
+      <template v-slot:header>
+        <h1>NEED A HAND OR TWO?</h1>
+      </template>
       <template v-slot:body>
         <div v-if="hasDefinition">
           <h3>Pay 3 Coins and we will tell you something about the word</h3>
@@ -66,6 +78,7 @@
           <div v-if="showDefinitionToggle">
             <h3>{{ definition }}</h3>
           </div>
+          <hr />
         </div>
         <h3>
           Pay 3 Coins to reveal one letter of the word(and all the other
@@ -74,10 +87,13 @@
         <button @click="hintRevealPay">
           YES, LET ME CHOOSE A LETTER TO REVEAL!
         </button>
-
-        <button @click="showHintToggle">CLOSE</button>
+        <div id="hint-footer">
+          <button id="hint-button" @click="showHintToggle">
+            NO THANKS I'VE CHANGED MY MIND
+          </button>
+        </div>
       </template>
-    </modal>
+    </base-modal>
   </transition>
 
   <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
@@ -97,13 +113,11 @@
 
 <script>
 import Letter from "./components/Letter";
-import Modal from "./components/Modal";
 import ButtonStart from "./components/ButtonStart";
 
 export default {
   components: {
     Letter,
-    Modal,
     ButtonStart,
   },
   data() {
@@ -217,14 +231,14 @@ export default {
         return (this.hintRevealToggle = false);
       }
     },
-    hintRevealPay(){
-      this.coins = this.coins - 3
-      this.showHint = false
-      return this.hintRevealToggle = true
+    hintRevealPay() {
+      this.coins = this.coins - 3;
+      this.showHint = false;
+      return (this.hintRevealToggle = true);
     },
     showDefinition() {
       this.coins = this.coins - 3;
-      return this.showDefinitionToggle = !this.showDefinitionToggle;
+      return (this.showDefinitionToggle = !this.showDefinitionToggle);
     },
   },
   computed: {
@@ -278,6 +292,21 @@ a {
 }
 button {
   margin: 2rem;
+}
+#hint-button {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+}
+#hint-footer {
+  margin-top: 50px;
+}
+#title {
+  color: #111;
+  font-size: 55px;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-align: center;
 }
 .secret-letters {
   display: flex;
