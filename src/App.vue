@@ -1,9 +1,5 @@
 <template>
-  <header class="animate__animated animate__bounceInDown">
-    <h1 id="title">GUESSaWORD</h1>
-  </header>
-  <h2>Total coins: {{ coins }}</h2>
-  <h2>Guessed words: {{ totalGuessWords }}</h2>
+  <the-header :coins="coins" :totalGuessedWords="totalGuessedWords" />
 
   <!-- these are the displayed coin that animate when guessing the word -->
   <div class="secret-letters">
@@ -28,97 +24,64 @@
     @close="restart"
   ></button-start>
 
-  <div>
-    <li class="wrong-keys" v-for="wrong in wrongLetters" :key="wrong.index">
-      <h1 class="animate__animated animate__headShake">{{ wrong }}</h1>
-    </li>
-  </div>
+  <the-lose-modal
+    v-if="lost"
+    :word="word"
+    @play-again="restart"
+  ></the-lose-modal>
 
-  <transition name="modal">
-    <base-modal v-if="lost" @close="restart">
-      <template v-slot:header>
-        <h1>Vaccaboia! You Lost</h1>
-      </template>
-      <template v-slot:body>
-        <h3>The word was: {{ word }}</h3>
-      </template>
-      <template v-slot:footer>
-        <!-- <button>DEAFULT BUTTON TO GET A NEW WORD</button> -->
-      </template>
-    </base-modal>
-  </transition>
+  <the-win-modal v-if="win" :word="word" @next-word="oneWord()"></the-win-modal>
 
-  <transition name="modal">
-    <base-modal v-if="win" @close="restart">
-      <template v-slot:header>
-        <h1>You got it right!</h1>
-      </template>
-      <template v-slot:body>
-        <h3>The word was: {{ word }}</h3>
-        <div id="hint-footer">
-          <button id="hint-button" @click="oneWord">
-            LET'S GUESS THE NEXT
-          </button>
-        </div>
-      </template>
-    </base-modal>
-  </transition>
-
-  <transition name="modal">
-    <base-modal v-if="showHint">
-      <template v-slot:header>
-        <h1>NEED A HAND OR TWO?</h1>
-      </template>
-      <template v-slot:body>
-        <div v-if="hasDefinition">
-          <h3>Pay 3 Coins and we will tell you something about the word</h3>
-          <button v-if="!showDefinitionToggle" @click="showDefinition">
-            YES, I WANNA KNOW!
-          </button>
-          <div v-if="showDefinitionToggle">
-            <h3>{{ definition }}</h3>
-          </div>
-          <hr />
-        </div>
-        <h3>
-          Pay 3 Coins to reveal one letter of the word(and all the other
-          occerrences of the same letter!!)
-        </h3>
-        <button @click="hintRevealPay">
-          YES, LET ME CHOOSE A LETTER TO REVEAL!
-        </button>
-        <div id="hint-footer">
-          <button id="hint-button" @click="showHintToggle">
-            NO THANKS I'VE CHANGED MY MIND
-          </button>
-        </div>
-      </template>
-    </base-modal>
-  </transition>
+  <the-hint-modal
+    v-if="showHint"
+    :hasDefinition="hasDefinition"
+    :definition="definition"
+    :showDefinitionToggle="showDefinitionToggle"
+    @show-definition="showDefinition"
+    @show-hint-toggle="showHintToggle"
+    @hint-reveal-pay="hintRevealPay"
+  ></the-hint-modal>
 
   <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
 
   <button
     v-if="startedGame"
-    @click="
-      showHintToggle();
-      checkDictionary();
-    "
-  >
+    @click="showHintToggle(); checkDictionary();">
     WANNA PAY FOR SOME HINTS?
   </button>
+  <hr>
+  <div v-if="wrongLetters.length > 0">
+    <h2>Wrong Letters:</h2>
+  </div>
+    <wrong-letters
+    v-for="wrongLetter in wrongLetters"
+    :key="wrongLetter.index"
+    :wrongLetter="wrongLetter"
+  >
+  This is so wrong
+  </wrong-letters>
 
   <!-- <button @click="checkDictionary">DICTIONARY</button> -->
 </template>
 
 <script>
+import TheHeader from "./components/TheHeader.vue";
 import Letter from "./components/Letter";
 import ButtonStart from "./components/ButtonStart";
+import TheWinModal from "./components/TheWinModal.vue";
+import TheLoseModal from "./components/TheLoseModal.vue";
+import TheHintModal from "./components/TheHintModal.vue";
+import WrongLetters from "./components/WrongLetters.vue";
 
 export default {
   components: {
+    TheHeader,
     Letter,
     ButtonStart,
+    TheWinModal,
+    TheLoseModal,
+    TheHintModal,
+    WrongLetters,
   },
   data() {
     return {
@@ -135,7 +98,8 @@ export default {
       hintRevealToggle: false,
       showHint: false,
       coins: 5,
-      totalGuessWords: 0,
+      totalGuessedWords: 0,
+      showHelp: false,
     };
   },
   mounted: function() {
@@ -207,7 +171,7 @@ export default {
     async checkDictionary() {
       // this checks on datamuse with sp = spelling and md=d definition
       // `https://api.datamuse.com/words?sp=${this.word.toLowerCase()}&md=d`
-      const res = await fetch(
+      try {const res = await fetch(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${this.word.toLowerCase()}`
       );
       const json = await res.json();
@@ -216,6 +180,9 @@ export default {
       //        this.definition = result[0].defs[0];
       this.definition = json[0]["meanings"][0]["definitions"][0]["definition"];
       console.log(this.definition);
+        } catch (error) {
+        throw new Error("not in the dictionary");
+  }
     },
     showHintToggle() {
       this.showDefinitionToggle = false;
@@ -316,11 +283,6 @@ button {
 .user-input {
   padding: 10px;
   margin: 1rem 0rem -1rem 2rem;
-}
-.wrong-keys {
-  font-size: 30px;
-  color: red;
-  text-shadow: #2c3e50;
 }
 
 .modal-enter-active,
