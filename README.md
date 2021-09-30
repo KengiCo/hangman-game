@@ -88,7 +88,16 @@ Following some useful materials for your work:
 - instead of tries, use money to bet on letters
 - add hints that you can trade with money
 - hint: get the definition of the word, with a call at the dictionary
-- hint: flip a letter(50% chance getting the letter)
+- hint: reveal a letter(pay and click to reveal a letter)
+
+* COIN LOGIC
+
+- player start with a set amount of gold coins
+- he gets more gold for every word he guesses, plus some more
+if he gets the whole word
+- he loses money everytime he misses
+- he can pay for hints
+
 
 
 

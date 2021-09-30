@@ -15,7 +15,6 @@
     </letter>
   </div>
 
-  <!-- <button v-if="!startedGame" @click="oneWord">START</button> -->
   <div class="user-input" v-if="startedGame">
     <h1>type the letter you want to guess</h1>
   </div>
@@ -23,6 +22,24 @@
     v-if="startedGame && !win && !lost"
     @close="restart"
   ></button-start>
+
+  <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
+
+  <button
+    v-if="startedGame"
+    @click="showHintToggle(); checkDictionary();">
+    WANNA PAY FOR SOME HINTS?
+  </button>
+  <hr>
+  <div v-if="wrongLetters.length > 0">
+    <h2>Wrong Letters:</h2>
+  </div>
+    <wrong-letters
+    v-for="wrongLetter in wrongLetters"
+    :key="wrongLetter.index"
+    :wrongLetter="wrongLetter"
+  >
+  </wrong-letters>
 
   <the-lose-modal
     v-if="lost"
@@ -41,26 +58,6 @@
     @show-hint-toggle="showHintToggle"
     @hint-reveal-pay="hintRevealPay"
   ></the-hint-modal>
-
-  <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
-
-  <button
-    v-if="startedGame"
-    @click="showHintToggle(); checkDictionary();">
-    WANNA PAY FOR SOME HINTS?
-  </button>
-  <hr>
-  <div v-if="wrongLetters.length > 0">
-    <h2>Wrong Letters:</h2>
-  </div>
-    <wrong-letters
-    v-for="wrongLetter in wrongLetters"
-    :key="wrongLetter.index"
-    :wrongLetter="wrongLetter"
-  >
-  This is so wrong
-  </wrong-letters>
-
   <!-- <button @click="checkDictionary">DICTIONARY</button> -->
 </template>
 
