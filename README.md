@@ -89,6 +89,7 @@ Following some useful materials for your work:
 - add hints that you can trade with money
 - hint: get the definition of the word, with a call at the dictionary
 - hint: reveal a letter(pay and click to reveal a letter)
+- for mobiles, add custom on screen keyboard
 
 * COIN LOGIC
 
@@ -97,6 +98,15 @@ Following some useful materials for your work:
 if he gets the whole word
 - he loses money everytime he misses
 - he can pay for hints
+
+* DESING
+
+- hint modal and buttons
+- total coins and guessed words
+- better show of wrong letters
+- clearer graphic theme
+- font consistency
+
 
 
 

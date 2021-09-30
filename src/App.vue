@@ -15,13 +15,12 @@
     </letter>
   </div>
 
+ 
   <div class="user-input" v-if="startedGame">
     <h1>type the letter you want to guess</h1>
   </div>
-  <button-start
-    v-if="startedGame && !win && !lost"
-    @close="restart"
-  ></button-start>
+
+  <!-- start game button, should disappear when game starts -->
 
   <button-start v-if="!startedGame" @close="oneWord">Start</button-start>
 
@@ -58,7 +57,6 @@
     @show-hint-toggle="showHintToggle"
     @hint-reveal-pay="hintRevealPay"
   ></the-hint-modal>
-  <!-- <button @click="checkDictionary">DICTIONARY</button> -->
 </template>
 
 <script>
