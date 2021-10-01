@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <base-modal @close="restart">
+    <base-modal>
       <template v-slot:header>
         <h1>You got it right!</h1>
       </template>

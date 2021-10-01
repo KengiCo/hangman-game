@@ -90,6 +90,7 @@ Following some useful materials for your work:
 - hint: get the definition of the word, with a call at the dictionary
 - hint: reveal a letter(pay and click to reveal a letter)
 - for mobiles, add custom on screen keyboard
+- different languages and a kid's level(this could be even with pictures for kids who are starting to learn how to write)
 
 * COIN LOGIC
 

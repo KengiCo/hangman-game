@@ -15,7 +15,6 @@
     </letter>
   </div>
 
- 
   <div class="user-input" v-if="startedGame">
     <h1>type the letter you want to guess</h1>
   </div>
@@ -26,14 +25,22 @@
 
   <button
     v-if="startedGame"
-    @click="showHintToggle(); checkDictionary();">
+    @click="
+      showHintToggle();
+      checkDictionary();
+    "
+  >
     WANNA PAY FOR SOME HINTS?
   </button>
-  <hr>
+  <hr />
+  <the-keyboard @pressedOnScreen="checkOnScreen"></the-keyboard>
+
+  <hr />
   <div v-if="wrongLetters.length > 0">
     <h2>Wrong Letters:</h2>
   </div>
-    <wrong-letters
+
+  <wrong-letters
     v-for="wrongLetter in wrongLetters"
     :key="wrongLetter.index"
     :wrongLetter="wrongLetter"
@@ -67,6 +74,7 @@ import TheWinModal from "./components/TheWinModal.vue";
 import TheLoseModal from "./components/TheLoseModal.vue";
 import TheHintModal from "./components/TheHintModal.vue";
 import WrongLetters from "./components/WrongLetters.vue";
+import TheKeyboard from "./components/TheKeyboard.vue";
 
 export default {
   components: {
@@ -77,6 +85,7 @@ export default {
     TheLoseModal,
     TheHintModal,
     WrongLetters,
+    TheKeyboard,
   },
   data() {
     return {
@@ -151,6 +160,7 @@ export default {
       }
     },
     startGame() {
+      this.wrongLetters = []
       this.secretWord = this.word.split("").map(() => "_");
       this.win = false;
       this.startedGame = true;
@@ -166,18 +176,20 @@ export default {
     async checkDictionary() {
       // this checks on datamuse with sp = spelling and md=d definition
       // `https://api.datamuse.com/words?sp=${this.word.toLowerCase()}&md=d`
-      try {const res = await fetch(
-        `https://api.dictionaryapi.dev/api/v2/entries/en/${this.word.toLowerCase()}`
-      );
-      const json = await res.json();
-      // const result = JSON.stringify(json)
-      //        this is syntax for datamuse
-      //        this.definition = result[0].defs[0];
-      this.definition = json[0]["meanings"][0]["definitions"][0]["definition"];
-      console.log(this.definition);
-        } catch (error) {
+      try {
+        const res = await fetch(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${this.word.toLowerCase()}`
+        );
+        const json = await res.json();
+        // const result = JSON.stringify(json)
+        //        this is syntax for datamuse
+        //        this.definition = result[0].defs[0];
+        this.definition =
+          json[0]["meanings"][0]["definitions"][0]["definition"];
+        console.log(this.definition);
+      } catch (error) {
         throw new Error("not in the dictionary");
-  }
+      }
     },
     showHintToggle() {
       this.showDefinitionToggle = false;
@@ -201,6 +213,11 @@ export default {
     showDefinition() {
       this.coins = this.coins - 3;
       return (this.showDefinitionToggle = !this.showDefinitionToggle);
+    },
+    checkOnScreen(button) {
+      this.guessedLetter = button
+      if (!this.secretWord.includes(this.guessedLetter)) {
+      this.checkPressed();}
     },
   },
   computed: {
@@ -253,7 +270,7 @@ a {
   color: #42b983;
 }
 button {
-  margin: 2rem;
+  margin: 5px;
 }
 #hint-button {
   position: absolute;
@@ -270,6 +287,7 @@ button {
   line-height: 1;
   text-align: center;
 }
+
 .secret-letters {
   display: flex;
   justify-content: center;

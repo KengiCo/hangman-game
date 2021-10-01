@@ -33,18 +33,7 @@ export default {
 </script>
 
 <style scoped>
-/* button {
-  position: relative;
-  background-color: #e1cbcb;
-  border-radius: 46%;
-  padding: 15px;
-  margin: 10px;
-  width: 45px;
-  height: 45px;
-  font-size: 17px;
-  font-weight: bold;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
-} */
+
 .letter {
   display: flex;
   align-items: center;
@@ -55,11 +44,10 @@ export default {
   border-radius: 80%;
   top: 50%;
   left: 50%;
-  /* transform: translate(-50%, -50%); */
   transform: translate(0%, 0%);
 }
 
-/* THE CARD HOLDS THE FRONT AND BACK FACES */
+/* HOLDS THE FRONT AND BACK  */
 .thecard {
   position: relative;
   top: 0;
@@ -71,7 +59,7 @@ export default {
   transition: all 0.8s cubic-bezier(0,.79,.75,.71);
 }
 
-/* THE PSUEDO CLASS CONTROLS THE FLIP ON MOUSEOVER AND MOUSEOUT */
+/* THE PSUEDO CLASS CONTROLS THE FLIP */
 .thecard-guessed {
   transform: rotateY(900deg);
   transition-duration: 2s;  
@@ -110,7 +98,7 @@ export default {
   transform: rotateY(180deg);
 }
 
-/*This block (starts here) is merely styling for the flip card, and is NOT an essential part of the flip code */
+/*This block is styling for the flip card */
 .thefront h1,
 .theback h1 {
   font-family: "zilla slab", sans-serif;
@@ -120,13 +108,33 @@ export default {
   margin: 0px;
 }
 
-/* .thefront p,
-.theback p {
-  font-family: "zilla slab", sans-serif;
-  padding: 30px;
-  font-weight: normal;
-  font-size: 12px;
-  text-align: center;
-} */
-/*This block (ends here) is merely styling for the flip card, and is NOT an essential part of the flip code */
+@media screen and (min-width:550px) and (max-width:900px) {
+
+.letter {
+  width: 40px;
+  height: 40px;
+}
+.thefront h1 {
+  font-size: 50px;
+}
+
+.theback {
+  font-size: 30px;
+}
+}
+@media screen and (max-width:550px){
+
+.letter {
+  width: 30px;
+  height: 30px;
+}
+.thefront h1,
+.theback h1 {
+  font-size: 40px;
+}
+.theback {
+  font-size: 20px;
+}
+}
+
 </style>
