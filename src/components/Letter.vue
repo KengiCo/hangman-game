@@ -1,5 +1,4 @@
 <template>
-  <!-- <button class="letter">{{ letter }}</button> -->
   <div class="letter">
     <div
       class="thecard"
@@ -65,7 +64,7 @@ export default {
   transition-duration: 2s;  
 }
 
-/* THE FRONT FACE OF THE CARD, WHICH SHOWS BY DEFAULT */
+/* THE FRONT FACE OF THE CARD */
 .thefront {
   position: absolute;
   top: 0;
@@ -81,7 +80,7 @@ export default {
   font-size: 140px;
 }
 
-/* THE BACK FACE OF THE CARD, WHICH SHOWS ON MOUSEOVER */
+/* THE BACK FACE OF THE CARD, SHOWS WHEN LETTER IS GUESSED */
 .theback {
   position: absolute;
   top: 0;
@@ -98,7 +97,6 @@ export default {
   transform: rotateY(180deg);
 }
 
-/*This block is styling for the flip card */
 .thefront h1,
 .theback h1 {
   font-family: "zilla slab", sans-serif;

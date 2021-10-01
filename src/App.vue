@@ -64,6 +64,9 @@
     @show-hint-toggle="showHintToggle"
     @hint-reveal-pay="hintRevealPay"
   ></the-hint-modal>
+
+<the-form :totalGuessedWords="totalGuessedWords"></the-form>
+
 </template>
 
 <script>
@@ -75,6 +78,9 @@ import TheLoseModal from "./components/TheLoseModal.vue";
 import TheHintModal from "./components/TheHintModal.vue";
 import WrongLetters from "./components/WrongLetters.vue";
 import TheKeyboard from "./components/TheKeyboard.vue";
+import TheForm from "./components/TheForm.vue";
+
+
 
 export default {
   components: {
@@ -86,6 +92,7 @@ export default {
     TheHintModal,
     WrongLetters,
     TheKeyboard,
+    TheForm,
   },
   data() {
     return {
@@ -168,7 +175,7 @@ export default {
     checkWord() {
       if (!this.secretWord.includes("_")) {
         this.startedGame = false;
-        this.totalGuessWords++;
+        this.totalGuessedWords++;
         this.coins = this.coins + 3;
         return (this.win = true);
       }
