@@ -28,6 +28,8 @@ export default {
 </script>
 <style scoped>
 button {
+    border-radius: 0;
+    height:1.5rem;
     width: 2rem;
     font-weight: bold;
 	font-family: Arial, Helvetica, sans-serif;
@@ -49,4 +51,12 @@ button:active {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(1.5em, 1fr));
 	grid-gap: 0.5rem;}
+@media screen and (max-width:380px){
+button {
+    border-radius: 0;
+    height:25px;
+    width: 30px;
+}
+
+}
 </style>

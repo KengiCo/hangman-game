@@ -15,7 +15,7 @@
     </letter>
   </div>
 
-  <div class="user-input" v-if="startedGame">
+  <div class="user-input" v-if="startedGame && guessedLetter.length == 0">
     <h1>type the letter you want to guess</h1>
   </div>
 
@@ -30,7 +30,7 @@
       checkDictionary();
     "
   >
-    WANNA PAY FOR SOME HINTS?
+    NEED SOME HINTS?
   </button>
   <hr />
   <the-keyboard @pressedOnScreen="checkOnScreen"></the-keyboard>
@@ -307,4 +307,14 @@ button {
 .modal-leave-to {
   opacity: 0;
 }
+@media screen and (max-width:550px){
+#title {
+  font-size: 35px;
+}
+button {
+  margin: 1px;
+}
+
+}
+
 </style>
