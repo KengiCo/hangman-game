@@ -67,6 +67,8 @@
 
 <the-form :totalGuessedWords="totalGuessedWords"></the-form>
 
+<the-hall-of-fame></the-hall-of-fame>
+
 </template>
 
 <script>
@@ -79,6 +81,7 @@ import TheHintModal from "./components/TheHintModal.vue";
 import WrongLetters from "./components/WrongLetters.vue";
 import TheKeyboard from "./components/TheKeyboard.vue";
 import TheForm from "./components/TheForm.vue";
+import TheHallOfFame from "./components/TheHallOfFame.vue";
 
 
 
@@ -93,6 +96,7 @@ export default {
     WrongLetters,
     TheKeyboard,
     TheForm,
+    TheHallOfFame,
   },
   data() {
     return {
@@ -109,7 +113,7 @@ export default {
       hintRevealToggle: false,
       showHint: false,
       coins: 5,
-      totalGuessedWords: 0,
+      totalGuessedWords: 9,
       showHelp: false,
     };
   },
